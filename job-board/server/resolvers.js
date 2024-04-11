@@ -42,14 +42,52 @@ export const resolvers = {
   },
 
   Mutation: {
-    createAJob: (_, { input }) => createJob(input),
-    updateAJob: (_, { input }) => updateJob(input),
-    deleteAJob: (_, { id }) => deleteJob(id),
+    createAJob: (_, { input }, context) => {
+      if (!context.user) {
+        onUnauthorized("You not authorized to create a job.");
+      }
+      const { companyId } = context.user;
+      return createJob({ companyId, ...input });
+    },
+
+    updateAJob: async (_, { input }, context) => {
+      const { user } = context;
+      if (!user) {
+        onUnauthorized("You not authorized to update a job.");
+      }
+
+      const job = await updateJob({ ...input, companyId: user.companyId });
+
+      if (!job) {
+        onNotFoundError(`Job with id: ${input.id} was not found.`);
+      }
+      return job;
+    },
+
+    deleteAJob: async (_, { id }, context) => {
+      const { user } = context;
+      if (!user) {
+        onUnauthorized("You not authorized to delete a job.");
+      }
+
+      const job = await deleteJob(id, user.companyId);
+
+      if (!job) {
+        onNotFoundError(`Job with id: ${id} was not found.`);
+      }
+      return job;
+    },
   },
 };
 
 function onNotFoundError(message) {
   throw new GraphQLError(message, {
     extensions: { code: "NOT_FOUND" },
+  });
+}
+
+function onUnauthorized(message) {
+  throw new GraphQLError(message, {
+    extensions: { code: "UNAUTHORIZED" },
   });
 }

@@ -13,7 +13,6 @@ function CreateJobPage() {
     const job = await createAJob({
       title,
       description,
-      companyId: "FjcJCHJALA4i", // TODO companyId hardcode
     });
     navigate(`/jobs/${job.id}`);
   };

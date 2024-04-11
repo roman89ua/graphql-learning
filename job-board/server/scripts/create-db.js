@@ -72,8 +72,8 @@ await connection.table("user").insert([
   {
     id: "AcMJpL7b413Z",
     companyId: "FjcJCHJALA4i",
-    email: "1@1.1",
-    password: "1",
+    email: "alice@facegle.io",
+    password: "alice123",
   },
   {
     id: "BvBNW636Z89L",
