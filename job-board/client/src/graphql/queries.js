@@ -69,3 +69,17 @@ export async function getACompany(id) {
 
   return company;
 }
+
+export async function createAJob(input) {
+  const document = gql`
+    mutation createAJob($input: CreateAJobInput!) {
+      job: createAJob(input: $input) {
+        id
+      }
+    }
+  `;
+
+  const { job } = await client.request(document, { input });
+
+  return job;
+}

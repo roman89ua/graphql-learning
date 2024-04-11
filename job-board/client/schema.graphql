@@ -24,3 +24,21 @@ type Query {
     company(id: ID!): Company
 }
 
+type Mutation {
+    createAJob(input: CreateAJobInput!): Job!
+    updateAJob(input: UpdateAJobInput!): Job!
+    deleteAJob(id: ID!): Job!
+}
+
+input CreateAJobInput {
+    companyId: String!
+    description: String
+    title: String!
+}
+
+input UpdateAJobInput {
+    id: ID!
+    title: String
+    description: String
+}
+
