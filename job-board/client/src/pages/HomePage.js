@@ -1,14 +1,15 @@
 import JobList from "../components/JobList";
-// import { jobs } from "../lib/fake-data";
-import { useEffect, useState } from "react";
-import { fetchJobs } from "../graphql/queries";
+
+import { useFetchJobsQuery } from "../graphql/queryHooks/useFetchJobsQuery";
 
 function HomePage() {
-  const [jobs, setJobs] = useState([]);
+  const { data, loading, error } = useFetchJobsQuery();
 
-  useEffect(() => {
-    fetchJobs().then((jobs) => setJobs(jobs));
-  }, []);
+  if (loading) return <p>Loading...</p>;
+
+  if (error) return <p>{error.message}</p>;
+
+  const { jobs } = data;
 
   return (
     <div>

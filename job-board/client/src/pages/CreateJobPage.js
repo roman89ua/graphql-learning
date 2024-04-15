@@ -1,27 +1,28 @@
-import { useRef, useState } from "react";
-import { createAJob } from "../graphql/queries";
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import { usePostNewJobMutation } from "../graphql/queryHooks/usePostNewJobMutation";
 
 function CreateJobPage() {
   const navigate = useNavigate();
-  const formRef = useRef(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const { createJob, loading, error } = usePostNewJobMutation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const job = await createAJob({
-      title,
-      description,
-    });
+
+    const job = await createJob(title, description);
+
     navigate(`/jobs/${job.id}`);
   };
+
+  if (error) return <p>{error.message}</p>;
 
   return (
     <div>
       <h1 className="title">New Job</h1>
       <div className="box">
-        <form ref={formRef}>
+        <form>
           <div className="field">
             <label className="label">Title</label>
             <div className="control">
@@ -46,7 +47,11 @@ function CreateJobPage() {
           </div>
           <div className="field">
             <div className="control">
-              <button className="button is-link" onClick={handleSubmit}>
+              <button
+                disabled={loading || error}
+                className="button is-link"
+                onClick={handleSubmit}
+              >
                 Submit
               </button>
             </div>

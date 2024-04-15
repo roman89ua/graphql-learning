@@ -1,47 +1,13 @@
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { formatDate } from "../lib/formatters";
-import { useCallback, useEffect, useState } from "react";
-import { getAJob } from "../graphql/queries";
+import { useJobBuIdQuery } from "../graphql/queryHooks/useJobByIdQuery";
 
 function JobPage() {
   const { jobId } = useParams();
-  const [state, setState] = useState({
-    isLoading: true,
-    job: null,
-    error: null,
-  });
+  const { data, loading, error } = useJobBuIdQuery(jobId);
 
-  const fetchJob = useCallback(async () => {
-    try {
-      const job = await getAJob(jobId);
-      setState((prevState) => {
-        return {
-          ...prevState,
-          job,
-          isLoading: false,
-          error: null,
-        };
-      });
-    } catch (e) {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          job: null,
-          isLoading: false,
-          error: e,
-        };
-      });
-    }
-  }, [jobId]);
-
-  useEffect(() => {
-    fetchJob();
-  }, [fetchJob]);
-
-  const { error, job, isLoading } = state;
-
-  if (isLoading) {
+  if (loading) {
     return "Loading...";
   }
 
@@ -53,6 +19,8 @@ function JobPage() {
       </>
     );
   }
+
+  const { job } = data;
 
   return (
     <div>
