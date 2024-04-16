@@ -6,6 +6,11 @@ type Company {
     jobs: [Job!]
 }
 
+type JobsData {
+    items: [Job!]!
+    totalCount: Int!
+}
+
 type Job {
     """ id: not nullable field and text from comment """
     id: ID!
@@ -19,7 +24,7 @@ type Job {
 }
 
 type Query {
-    jobs: [Job!]
+    jobs(limit: Int, offset: Int): JobsData!
     job(id: ID!): Job
     company(id: ID!): Company
 }

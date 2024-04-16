@@ -57,9 +57,12 @@ export const getSingleJobQuery = gql`
 `;
 
 export const fetchJobsQuery = gql`
-  query getJobsQuery {
-    jobs: jobs {
-      ...jobDetails
+  query getJobsQuery($limit: Int, $offset: Int) {
+    jobs: jobs(limit: $limit, offset: $offset) {
+      items {
+        ...jobDetails
+      }
+      totalCount
     }
   }
   ${jobDetailsFragment}
